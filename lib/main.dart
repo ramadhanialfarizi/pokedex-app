@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pokedex_app/controller/provider.dart';
 import 'package:pokedex_app/model/pokemon_list.dart';
 import 'package:pokedex_app/screen/detail_page.dart';
+import 'package:pokedex_app/screen/fail_load_data/fail_load_data.dart';
 import 'package:pokedex_app/screen/home_page.dart';
 import 'package:pokedex_app/screen/spalshscreen/splashscreen.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +28,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.yellow,
-        //fontFamily: 'Poppins',
-      ),
+          //primarySwatch: Colors.yellow,
+          //fontFamily: 'Poppins',
+          ),
       initialRoute: '/',
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
@@ -45,6 +47,10 @@ class MyApp extends StatelessWidget {
             return CupertinoPageRoute(
                 builder: (_) => const DetailPokemonScreen(),
                 settings: settings);
+          // testing
+          // case '/wrong_data':
+          //   return CupertinoPageRoute(
+          //       builder: (_) => const FailLoadDataScreen(), settings: settings);
         }
         return null;
       },

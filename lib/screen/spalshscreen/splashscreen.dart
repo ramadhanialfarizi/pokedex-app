@@ -20,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var duration = const Duration(seconds: 3);
     return Timer(duration, () {
       Navigator.of(context).pushReplacementNamed('/home');
+      //Navigator.of(context).pushReplacementNamed('/wrong_data');
     });
   }
 

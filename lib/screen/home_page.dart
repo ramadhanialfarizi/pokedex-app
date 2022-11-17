@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokedex_app/controller/provider.dart';
+import 'package:pokedex_app/model/pokemon_list.dart';
+import 'package:pokedex_app/screen/fail_load_data/fail_load_data.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,41 +87,82 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<PokemonListProvider>(
         builder:
             (BuildContext context, PokemonListProvider provider, Widget? _) {
-          if (provider.pokemonData.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.only(top: 50.0),
-              child: Center(
-                child: Text('No have data'),
-              ),
-            );
+          final isLoading = provider.state == PokemonListState.loading;
+          final isError = provider.state == PokemonListState.error;
+
+          if (isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (isError) {
+            return const FailLoadDataScreen();
           } else {
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              itemCount: provider.pokemonData.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/detail');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color.fromARGB(255, 179, 255, 181),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(provider.pokemonData[index].name!),
-                        ],
+            return Padding(
+              padding: const EdgeInsets.only(top: 50.0),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                itemCount: provider.pokemonData.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        '/detail',
+                        arguments: PokemonModel(
+                          image: provider.pokemonData[index].image,
+                          name: provider.pokemonData[index].name!,
+                          height: provider.pokemonData[index].height,
+                          weight: provider.pokemonData[index].weight,
+                          weakness: provider.pokemonData[index].weakness,
+                          spawnChange: provider.pokemonData[index].spawnChange,
+                          spawnTime: provider.pokemonData[index].spawnTime,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color.fromARGB(255, 179, 255, 181),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Center(
+                              child: Image.network(
+                                  provider.pokemonData[index].image!),
+                            ),
+                            Container(
+                              width: 100,
+                              height: 25,
+                              margin: const EdgeInsets.only(
+                                right: 17.0,
+                                left: 17.0,
+                                bottom: 17.0,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color.fromARGB(255, 102, 202, 106),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  provider.pokemonData[index].name!,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           }
         },
